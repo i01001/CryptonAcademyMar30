@@ -25,23 +25,23 @@ contract CryptonIkhlas is Ownable {
         uint blocktime;
     
     }
+    
+    uint public campaignCounter = 0;  // Campaign counters or sets of voting campaigns 
+    uint public overIndex = 0;   // Overall index number for proposals
+    uint public comm = 0;  // commission for owner value
 
-    uint campaignCounter = 0;
-    uint overIndex = 0;
-    uint comm = 0;
-    
     Proposal[] public proposals;
-    
     mapping(uint => Proposal[]) public campaignProposals;
     mapping(uint => mapping(address => Voter)) public campaignVoters;
 
-    constructor() {
-    }
+    // constructor() {
+    // }
 
     function iniateVoting (address[] memory proposalNames) public onlyOwner {
         campaignCounter++;
    for (uint i = 0; i < proposalNames.length; i++) {
             proposals.push(Proposal({
+                
                 campnumber: campaignCounter,
                 name: proposalNames[i],
                 campIndex: i,
@@ -113,7 +113,6 @@ contract CryptonIkhlas is Ownable {
         return _proposals;
     }
 
-
     // function votersProposals (uint _campaign, uint _proposal) public view returns (address[] memory ){       
     //     address[] memory _voters = new address[](campaignProposals[_campaign][_proposal].votefor);
     //     uint j = 0;
@@ -128,9 +127,11 @@ contract CryptonIkhlas is Ownable {
     //         }
         
     // }
-    // return _voters;}
+    // return _voconst { expect } = require('chai');
+
 
     function listofallProposals() external view returns (Proposal[] memory){
         return proposals;
     }
 }
+
