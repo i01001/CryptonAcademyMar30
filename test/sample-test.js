@@ -42,25 +42,96 @@ describe("Checking intital values set correctly", () => {
     await expect(cryptonIkhlas.connect(secondaccount).iniateVoting([secondaccount.address, thirdaccount.address, fourthaccount.address])).to.be.revertedWith('Ownable: caller is not the owner');
   })
 
-      // above is done
-
-  it("should check for entry into IniateVoting Function is recorded correctly", async () => {
+  it("should check for entry into IniateVoting Function is updating Caampaign Number", async () => {
     const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
     var entry = [secondaccount.address, thirdaccount.address, fourthaccount.address];
-    await cryptonIkhlas.connect(owner).iniateVoting([secondaccount.address, thirdaccount.address, fourthaccount.address]);
+    await cryptonIkhlas.connect(owner).iniateVoting(entry);
     const Checkcampnumber = await cryptonIkhlas.callStatic.campaignCounter();
-    console.log(Checkcampnumber);
-    const CAMpnumber = await cryptonIkhlas.proposals[1];
-    console.log("proposal 1 check camp:  " + CAMpnumber);
-
-
-    expect(Checkcampnumber).to.equal(1);
-
-      // await expect(cryptonIkhlas.connect(owner).iniateVoting([secondaccount.address, thirdaccount.address, fourthaccount.address])).to.be.revertedWith('Ownable: caller is not the owner');
+    const proposalList = await cryptonIkhlas.listofallProposals();
+    expect(await proposalList[1][0]).to.equal(await cryptonIkhlas.callStatic.campaignCounter());
   })
+
+ it("should check for entry into IniateVoting Function is updating proposal name", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  const proposalList1 = await cryptonIkhlas.listofallProposals();
+  expect(await proposalList1[1][1]).to.equal(thirdaccount.address);
+})
+
+it("should check for voting Function is updating proposal vote count", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  await cryptonIkhlas.connect(owner).vote(1,0, {value: ethers.utils.parseEther("0.01")});
+  const proposalList2 = await cryptonIkhlas.listofallProposals();
+  const Voterecord = await cryptonIkhlas.campaignProposals(1,0);
+  expect(await Voterecord[4]).to.equal(1);
+});
+
+
+it("should check for voting Function does not accept with higher amount", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  await expect(cryptonIkhlas.connect(secondaccount).vote(1,0, {value: ethers.utils.parseEther("0.02")})).to.be.revertedWith('The amount needs to be exactly 0.01 ETH / 10000000 Gwei!');
+});
+
+
+it("should check for voting Function does not accept repeated voting for same campaign", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  await expect(cryptonIkhlas.connect(owner).vote(1,0, {value: ethers.utils.parseEther("0.01")})).to.be.revertedWith('Already voted.');
+});
+
+
+it("should check for Winning Proposal Function and shows the proposal in lead", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  expect(await cryptonIkhlas.connect(owner).winningProposal(1)).to.equal(0);
+});
+
+it("should check for Winner Name Function and not return as 3 days have not been completed", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  await expect(cryptonIkhlas.connect(owner).winnerName(1)).to.be.revertedWith('Voting will be closed 3 days (+/- 1 block time) after iniation');
+});
+
+
+
+// it("should check for voting Function does not accept with higher amount", async () => {
+//   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+//   await cryptonIkhlas.connect(owner).vote(1,0, {value: ethers.utils.parseEther("0.02")});
+//   const proposalList2 = await cryptonIkhlas.listofallProposals();
+//   // console.log(await proposalList2);
+//   const Voterecord = await cryptonIkhlas.campaignProposals(1,0);
+//   console.log("voting record:  " + Voterecord[4]);
+//   expect(await Voterecord[4]).to.equal(1);
+// });
+
+
+  // expect(await cryptonIkhlas.connect(owner).vote([0,1]).to.be.reverted);
+  // expect(await proposalList[1][1]).to.equal(thirdaccount.address);
+
+
+
+
+
+
+
+
+
+
+ 
+
+  // it("should check for entry into IniateVoting Function is recorded correctly in proposal struct", async () => {
+  //   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  //   var entry = [secondaccount.address, thirdaccount.address, fourthaccount.address];
+  //   await cryptonIkhlas.connect(owner).iniateVoting([secondaccount.address, thirdaccount.address, fourthaccount.address]);
+  //   const Checkcampnumber = await cryptonIkhlas.callStatic.campaignCounter();
+  //   console.log("camp number check:  " + Checkcampnumber);
+  //   const proplist = await cryptonIkhlas.listofallProposals();
+  //   console.log("again check: " + proplist[2][0]);
+  //   const CAMpnumber = await cryptonIkhlas.proposals[1];
+    
+  //   console.log("proposal 1 check camp:  " + CAMpnumber);
+  //   // expect(proplist[1][0]).to.equal(1);
+  //   // expect(proplist[1][0]).to.equal(1);
+  //   expect(await proposalList[1][0]).to.equal(await cryptonIkhlas.callStatic.campaignCounter());
+  //     // await expect(cryptonIkhlas.connect(owner).iniateVoting([secondaccount.address, thirdaccount.address, fourthaccount.address])).to.be.revertedWith('Ownable: caller is not the owner');
+  // })
   
-
-
 });
 
 
@@ -84,6 +155,7 @@ describe("Unit Test for Entry of Proposals by Contract owner", function () {
     // console.log(tx);
     expect((await cryptonIkhlas.proposalsCampaign(0)).toString()).to.equal("");
   });
+
 
 
 
