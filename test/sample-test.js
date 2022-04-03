@@ -89,6 +89,21 @@ it("should check for Winner Name Function and not return as 3 days have not been
 });
 
 
+it("should check for Winner Name Function once 3 days have not been completed", async () => {
+  const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
+  let WinnerInitalbalance= await ethers.provider.getBalance(secondaccount.address);   
+  await hre.ethers.provider.send('evm_increaseTime', [3 * 24 * 60 * 60]);
+  await cryptonIkhlas.connect(owner).winnerName(1);
+  let WinnerFinalbalance= await ethers.provider.getBalance(secondaccount.address);   
+  console.log("before win: " + WinnerInitalbalance + "After win: " + WinnerFinalbalance);
+
+  expect(await (WinnerFinalbalance - WinnerInitalbalance)).to.be.gt(9*10**15);
+
+
+  // expect(await cryptonIkhlas.connect(owner).winnerName(1)).to.equal(secondaccount.address);
+});
+
+
 
 // it("should check for voting Function does not accept with higher amount", async () => {
 //   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
