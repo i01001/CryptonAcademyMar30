@@ -1,0 +1,3 @@
+ETHERSCAN_API_KEY=<API key to be entered>
+RINKEBY_URL=https://eth-rinkeby.alchemyapi.io/v2/<API Key>
+PRIVATE_KEY=<to be entered>
