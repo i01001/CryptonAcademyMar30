@@ -26,9 +26,9 @@ contract CryptonIkhlas is Ownable {
     
     }
     
-    uint public campaignCounter = 0;  // Campaign counters or sets of voting campaigns 
-    uint public overIndex = 0;   // Overall index number for proposals
-    uint public comm = 0;  // commission for owner value
+    uint public campaignCounter;  // Campaign counters or sets of voting campaigns 
+    uint public overIndex;   // Overall index number for proposals
+    uint public comm ;  // commission for owner value
 
     Proposal[] public proposals;  
     mapping(uint => Proposal[]) public campaignProposals;
