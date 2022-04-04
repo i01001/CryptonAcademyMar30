@@ -13,19 +13,16 @@ describe("Checking intital values set correctly", () => {
   });
 
   it("should check for value of campaignCounter intially set to 0", async () => {
-    
     const CAmpaignCounter = await cryptonIkhlas.callStatic.campaignCounter();
     assert.equal(CAmpaignCounter, 0);
   })
 
   it("should check for value of Overall Index intially set to 0", async () => {
-    
     const OVerindex = await cryptonIkhlas.callStatic.overIndex();
     assert.equal(OVerindex, 0);
   })
 
   it("should check for value of Comission intially set to 0", async () => {
-    
     const COmm = await cryptonIkhlas.callStatic.comm();
     assert.equal(COmm, 0);
   })
@@ -64,18 +61,15 @@ it("should check for voting Function is updating proposal vote count", async () 
   expect(await Voterecord[4]).to.equal(1);
 });
 
-
 it("should check for voting Function does not accept with higher amount", async () => {
   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
   await expect(cryptonIkhlas.connect(secondaccount).vote(1,0, {value: ethers.utils.parseEther("0.02")})).to.be.revertedWith('The amount needs to be exactly 0.01 ETH / 10000000 Gwei!');
 });
 
-
 it("should check for voting Function does not accept repeated voting for same campaign", async () => {
   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
   await expect(cryptonIkhlas.connect(owner).vote(1,0, {value: ethers.utils.parseEther("0.01")})).to.be.revertedWith('Already voted.');
 });
-
 
 it("should check for Winning Proposal Function and shows the proposal in lead", async () => {
   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
