@@ -31,7 +31,7 @@ describe("Checking intital values set correctly", () => {
   })
 
   it("should check for value of Struct Proposal intially set to empty", async () => {
-    
+
     var PRoposal = await cryptonIkhlas.callStatic.proposals[0];
     assert.isUndefined(PRoposal, "undefined it is");
   })
@@ -89,7 +89,9 @@ it("should check for Winner Name Function and not return as 3 days have not been
 
 it("should not allow vote after 3 days", async () => {
   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
-  await hre.ethers.provider.send('evm_increaseTime', [3 * 24 * 60 * 60]);
+  // await hre.ethers.provider.send('evm_increaseTime', [3 * 24 * 60 * 60]);
+  await network.provider.send("evm_increaseTime", [3 * 24 * 60 * 60])
+  await network.provider.send("evm_mine") 
   await expect(cryptonIkhlas.connect(thirdaccount).vote(1,0, {value: ethers.utils.parseEther("0.01")})).to.be.revertedWith('Voting will be closed 3 days (+/- 1 block time) after iniation');
 })
 
@@ -156,7 +158,7 @@ describe("Unit Test for Crypton Ikhlas Contract", function () {
     let checkcomm = await cryptonIkhlas.comm();
     const tx = cryptonIkhlas.connect(owner).comm(comm = 1*10*18); 
     let ownerInitalbalance= await ethers.provider.getBalance(owner.address);   
-    cryptonIkhlas.comission ();
+    await cryptonIkhlas.comission ();
     let ownerFinalbalance = await ethers.provider.getBalance(owner.address);
     expect(await ownerInitalbalance.eq.ownerFinalbalance);
   });
