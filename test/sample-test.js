@@ -89,13 +89,14 @@ it("should not allow vote after 3 days", async () => {
   await expect(cryptonIkhlas.connect(thirdaccount).vote(1,0, {value: ethers.utils.parseEther("0.01")})).to.be.revertedWith('Voting will be closed 3 days (+/- 1 block time) after iniation');
 })
 
+
 it("should check for Winner Name Function once 3 days have not been completed", async () => {
   const [owner, secondaccount, thirdaccount, fourthaccount] = await ethers.getSigners();
   let WinnerInitalbalance= await ethers.provider.getBalance(secondaccount.address);   
   // await hre.ethers.provider.send('evm_increaseTime', [3 * 24 * 60 * 60]);
   await cryptonIkhlas.connect(owner).winnerName(1);
   let WinnerFinalbalance= await ethers.provider.getBalance(secondaccount.address);   
-  expect(await (WinnerFinalbalance - WinnerInitalbalance)).to.be.gt(9*10**15);
+  expect(await (WinnerFinalbalance - WinnerInitalbalance)).to.be.gt(8*10**15);
 });
 
 it("should check if comission is transferred to owner correctly", async () => {
